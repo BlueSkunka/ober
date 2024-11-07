@@ -83,6 +83,7 @@ build:
 	docker compose exec vite npm install
 	$(MAKE) doctrine-database-create
 	$(MAKE) doctrine-migration-migrate
+	$(MAKE) doctrine-fixtures-load
 
 build-no-cache:
 	clear
@@ -94,7 +95,7 @@ build-no-cache:
 	docker compose exec vite npm install
 	$(MAKE) doctrine-database-create
 	$(MAKE) doctrine-migration-migrate
-
+	$(MAKE) doctrine-fixtures-load
 up:
 	clear
 	@echo "Démarrage de l'application Öber IT en développement"
