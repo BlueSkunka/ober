@@ -4,7 +4,7 @@ services:
     image: mariadb:11.1.2
     restart: unless-stopped
     volumes:
-      - ./infra/volumes/dev/database:/var/lib/mysql
+      - ./infra/mariadb/volumes/dev/database:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
     ports:
@@ -26,14 +26,13 @@ services:
     networks:
       - nw.microservices
       - nw.backend
-      - host
 
   gateway-symfony-nginx:
     image: nginx:latest
     volumes:
-      - ./infra/volumes/dev/logs/nginx:/var/log/nginx
-      - ./infra/dev/symfony-nginx/virtualhost.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./api:/var/www/api
+      - ./infra/gateway/volumes/dev/logs/nginx:/var/log/nginx
+      - ./infra/gateway/dev/symfony-nginx/virtualhost.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./m2-microservices-gateway/api:/var/www/api
     ports:
       - "80:80"
     depends_on:
@@ -57,7 +56,6 @@ services:
     networks:
       - nw.microservices
       - nw.backend
-      - host
 
   customer-symfony-nginx:
     image: nginx:latest
@@ -85,7 +83,6 @@ services:
     networks:
       - nw.microservices
       - nw.backend
-      - host
 
   delivery-symfony-nginx:
     image: nginx:latest
@@ -113,7 +110,6 @@ services:
     networks:
       - nw.microservices
       - nw.backend
-      - host
 
   kitchen-symfony-nginx:
     image: nginx:latest
@@ -141,7 +137,6 @@ services:
     networks:
       - nw.microservices
       - nw.backend
-      - host
 
   order-symfony-nginx:
     image: nginx:latest
@@ -178,9 +173,6 @@ services:
       - nw.microservices
 
 networks:
-  host:
-    name: "host"
-    external: true
   nw.microservices:
   nw.frontend:
   nw.backend:

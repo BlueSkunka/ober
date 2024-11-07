@@ -5,5 +5,7 @@ m2-microservices-kitchen
 m2-microservices-order
 m2-microservices-front
 
-/infra/volumes
-/infra/logs
+/infra/**/volumes
+/infra/**/logs
+
+.idea
