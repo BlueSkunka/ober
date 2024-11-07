@@ -1,0 +1,9 @@
+m2-microservices-customer
+m2-microservices-delivery
+m2-microservices-gateway
+m2-microservices-kitchen
+m2-microservices-order
+m2-microservices-front
+
+/infra/volumes
+/infra/logs

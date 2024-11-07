@@ -1,0 +1,186 @@
+services:
+  # Database
+  mariadb:
+    image: mariadb:11.1.2
+    restart: unless-stopped
+    volumes:
+      - ./infra/volumes/dev/database:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    networks:
+      - nw.backend
+
+  # Gateway
+  gateway-symfony-php:
+    build:
+      context: ./infra/gateway/dev/symfony-php
+    volumes:
+      - ./infra/gateway/volumes/dev/composer:/root/.composer
+      - ./infra/gateway/dev/symfony-php/project.ini:/usr/local/etc/php/conf.d/project.ini:ro
+      - ./m2-microservices-gateway/api:/var/www/api
+    depends_on:
+      - mariadb
+    tty: true
+    networks:
+      - nw.microservices
+      - nw.backend
+      - host
+
+  gateway-symfony-nginx:
+    image: nginx:latest
+    volumes:
+      - ./infra/volumes/dev/logs/nginx:/var/log/nginx
+      - ./infra/dev/symfony-nginx/virtualhost.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./api:/var/www/api
+    ports:
+      - "80:80"
+    depends_on:
+      - gateway-symfony-php
+    tty: true
+    networks:
+      - nw.microservices
+      - nw.backend
+
+  # Customer
+  customer-symfony-php:
+    build:
+      context: ./infra/customer/dev/symfony-php
+    volumes:
+      - ./infra/customer/volumes/dev/composer:/root/.composer
+      - ./infra/customer/dev/symfony-php/project.ini:/usr/local/etc/php/conf.d/project.ini:ro
+      - ./m2-microservices-customer/api:/var/www/api
+    depends_on:
+      - mariadb
+    tty: true
+    networks:
+      - nw.microservices
+      - nw.backend
+      - host
+
+  customer-symfony-nginx:
+    image: nginx:latest
+    volumes:
+      - ./infra/customer/volumes/dev/logs/nginx:/var/log/nginx
+      - ./infra/customer/dev/symfony-nginx/virtualhost.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./m2-microservices-customer/api:/var/www/api
+    depends_on:
+      - customer-symfony-php
+    tty: true
+    networks:
+      - nw.backend
+
+  # Delivery
+  delivery-symfony-php:
+    build:
+      context: ./infra/delivery/dev/symfony-php
+    volumes:
+      - ./infra/delivery/volumes/dev/composer:/root/.composer
+      - ./infra/delivery/dev/symfony-php/project.ini:/usr/local/etc/php/conf.d/project.ini:ro
+      - ./m2-microservices-delivery/api:/var/www/api
+    depends_on:
+      - mariadb
+    tty: true
+    networks:
+      - nw.microservices
+      - nw.backend
+      - host
+
+  delivery-symfony-nginx:
+    image: nginx:latest
+    volumes:
+      - ./infra/delivery/volumes/dev/logs/nginx:/var/log/nginx
+      - ./infra/delivery/dev/symfony-nginx/virtualhost.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./m2-microservices-delivery/api:/var/www/api
+    depends_on:
+      - delivery-symfony-php
+    tty: true
+    networks:
+      - nw.backend
+
+  # Kitchen
+  kitchen-symfony-php:
+    build:
+      context: ./infra/kitchen/dev/symfony-php
+    volumes:
+      - ./infra/kitchen/volumes/dev/composer:/root/.composer
+      - ./infra/kitchen/dev/symfony-php/project.ini:/usr/local/etc/php/conf.d/project.ini:ro
+      - ./m2-microservices-kitchen/api:/var/www/api
+    depends_on:
+      - mariadb
+    tty: true
+    networks:
+      - nw.microservices
+      - nw.backend
+      - host
+
+  kitchen-symfony-nginx:
+    image: nginx:latest
+    volumes:
+      - ./infra/kitchen/volumes/dev/logs/nginx:/var/log/nginx
+      - ./infra/kitchen/dev/symfony-nginx/virtualhost.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./m2-microservices-kitchen/api:/var/www/api
+    depends_on:
+      - kitchen-symfony-php
+    tty: true
+    networks:
+      - nw.backend
+
+  # Order
+  order-symfony-php:
+    build:
+      context: ./infra/order/dev/symfony-php
+    volumes:
+      - ./infra/order/volumes/dev/composer:/root/.composer
+      - ./infra/order/dev/symfony-php/project.ini:/usr/local/etc/php/conf.d/project.ini:ro
+      - ./m2-microservices-order/api:/var/www/api
+    depends_on:
+      - mariadb
+    tty: true
+    networks:
+      - nw.microservices
+      - nw.backend
+      - host
+
+  order-symfony-nginx:
+    image: nginx:latest
+    volumes:
+      - ./infra/order/volumes/dev/logs/nginx:/var/log/nginx
+      - ./infra/order/dev/symfony-nginx/virtualhost.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./m2-microservices-order/api:/var/www/api
+    depends_on:
+      - order-symfony-php
+    tty: true
+    networks:
+      - nw.backend
+
+  # React Frontend
+  vite:
+    build:
+      context: ./infra/front/dev/vite
+    ports:
+      - 5173:5173
+    command: sh -c "npm install && npm run dev"
+    volumes:
+      - ./m2-microservices-front/app:/var/www/app
+    networks:
+      - nw.frontend
+
+  # RabbitMQ Messenger
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: m2-micro-service-rabbit
+    restart: unless-stopped
+    ports:
+      - "15672:15672"
+    networks:
+      - nw.microservices
+
+networks:
+  host:
+    name: "host"
+    external: true
+  nw.microservices:
+  nw.frontend:
+  nw.backend:
