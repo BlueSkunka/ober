@@ -75,6 +75,16 @@ doctrine-fixtures-load:
 	docker compose exec customer-symfony-php php bin/console d:f:l --no-interaction
 	docker compose exec kitchen-symfony-php php bin/console d:f:l --no-interaction
 
+clear-and-rebuild-database:
+	docker compose exec gateway-symfony-php php bin/console d:d:d --force
+	docker compose exec customer-symfony-php php bin/console d:d:d --force
+	docker compose exec delivery-symfony-php php bin/console d:d:d --force
+	docker compose exec kitchen-symfony-php php bin/console d:d:d --force
+	docker compose exec order-symfony-php php bin/console d:d:d --force
+	$(MAKE) doctrine-database-create
+	$(MAKE) doctrine-migration-migrate
+	$(MAKE) doctrine-fixtures-load
+
 build:
 	clear
 	@echo "Construction de l'application Öber IT"
