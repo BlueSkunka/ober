@@ -71,7 +71,9 @@ doctrine-migration-migrate:
 	docker compose exec order-symfony-php php bin/console d:m:m --no-interaction
 
 doctrine-fixtures-load:
+	docker compose exec gateway-symfony-php php bin/console d:f:l --no-interaction
 	docker compose exec customer-symfony-php php bin/console d:f:l --no-interaction
+	docker compose exec kitchen-symfony-php php bin/console d:f:l --no-interaction
 
 build:
 	clear
