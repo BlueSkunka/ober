@@ -50,6 +50,28 @@ build:
 	clear
 	@echo "Construction de l'application Öber IT"
 	docker compose build --no-cache
+	@echo "Démarrage de l'environnement Öber"
+	docker compose up -d
+	@echo "Installation des dépendances"
+	docker compose exec gateway-symfony-php composer install
+	docker compose exec customer-symfony-php composer install
+	docker compose exec delivery-symfony-php composer install
+	docker compose exec kitchen-symfony-php composer install
+	docker compose exec order-symfony-php composer install
+	docker compose exec vite npm install
+	@echo "Création des bases de données"
+	docker compose exec gateway-symfony-php php bin/console d:d:c
+	docker compose exec customer-symfony-php php bin/console d:d:c
+	docker compose exec delivery-symfony-php php bin/console d:d:c
+	docker compose exec kitchen-symfony-php php bin/console d:d:c
+	docker compose exec order-symfony-php php bin/console d:d:c
+	@echo "Exécution des migrations"
+	docker compose exec gateway-symfony-php php bin/console d:m:m --no-interaction
+	docker compose exec customer-symfony-php php bin/console d:m:m --no-interaction
+	docker compose exec delivery-symfony-php php bin/console d:m:m --no-interaction
+	docker compose exec kitchen-symfony-php php bin/console d:m:m --no-interaction
+	docker compose exec order-symfony-php php bin/console d:m:m --no-interaction
+
 
 up:
 	clear
