@@ -58,7 +58,7 @@ build:
 	docker compose exec delivery-symfony-php composer install
 	docker compose exec kitchen-symfony-php composer install
 	docker compose exec order-symfony-php composer install
-	docker compose exec vite npm install
+	#docker compose exec vite npm install
 	@echo "Création des bases de données"
 	docker compose exec gateway-symfony-php php bin/console d:d:c
 	docker compose exec customer-symfony-php php bin/console d:d:c
