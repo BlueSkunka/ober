@@ -56,6 +56,6 @@ php bin/console messenger:consume order_users order_plates delivery_update_order
 php bin/console messenger:consume delivery_orders delivery_order_status delivery_users -vv
 ```
 ## Connexion
-Vous pouvez désormais vous rendre sur l'application via [localhost:5173] et utiliser le compte suivant:
+Vous pouvez désormais vous rendre sur l'application via [localhost](localhost:5173) et utiliser le compte suivant:
 - username: mathis.rome@icloud.com
 - password: mathis
