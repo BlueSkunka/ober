@@ -7,13 +7,15 @@ Bienvenue sur l'application de gestion des commandes Öber, spécilisé dans la 
 - LIMANI Getoar
 - SOMVEILLE Quentin
 
-## Liens
+## Liens des microservices
 Voici les liens utiles:
 - [Gateway](https://github.com/mathisrome/m2-microservices-gateway)
 - [Customer](https://github.com/mathisrome/m2-microservices-customer)
 - [Kitchen](https://github.com/mathisrome/m2-microservices-kitchen)
 - [Delivery](https://github.com/mathisrome/m2-microservices-delivery)
 - [Order](https://github.com/mathisrome/m2-microservices-order)
+
+## Lien du diaporama
 - [Diaporama](https://docs.google.com/presentation/d/1L-1DR8S4r9CzKFjg4t4RdKLst96BJZVG1nGrd5Z9TUI/edit?usp=sharing)
 
 ## Initialiser l'application
